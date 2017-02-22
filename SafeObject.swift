@@ -79,7 +79,11 @@ public class SafeObject<T: Object>: Equatable {
     :returns: A new instance of the Object
     */
     public func object() -> T {
-        return unsafeBitCast(self.rbqSafeRealmObject.rlmObject() as! RLMObjectBase, to: T.self)
+        // Hotfix for `Could not cast value of type 'Swift.Optional<Swift.AnyObject>' (0x1261beec8) to 'RLMObjectBase' (0x1261b9ef0).`
+        guard let object = self.rbqSafeRealmObject.rlmObject() as? RLMObjectBase else {
+            return T()
+        }
+        return unsafeBitCast(object, to: T.self)
     }
     
     // MARK: Private Functions/Properties
